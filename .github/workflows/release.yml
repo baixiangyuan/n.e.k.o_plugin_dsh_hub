@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    uses: Project-N-E-K-O/N.E.K.O/.github/workflows/plugin-market-release.yml@main
+    with:
+      plugin-id: dsh_hub
+      neko-repository: Project-N-E-K-O/N.E.K.O
+      neko-ref: main
+    secrets: inherit

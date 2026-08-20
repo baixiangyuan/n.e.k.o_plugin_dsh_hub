@@ -1,0 +1,9 @@
+{
+  "panel.title": "DSH 插件中心",
+  "actions.search.label": "搜索插件",
+  "actions.open_detail.label": "查看详情",
+  "actions.close_detail.label": "返回列表",
+  "entries.search.name": "搜索 DSH 插件",
+  "entries.open_detail.name": "查看 DSH 插件详情",
+  "entries.close_detail.name": "关闭插件详情"
+}

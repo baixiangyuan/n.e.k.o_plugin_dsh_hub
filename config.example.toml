@@ -1,0 +1,14 @@
+# DSH 插件中心 - 配置示例
+# 复制为插件配置（在 N.E.K.O 的插件配置面板填入）以自定义行为。
+
+[dsh_hub]
+# DSH 插件市场目录页（中文）。后端会抓取并解析全量插件清单。
+catalog_url = "https://dsh-plugin.org/zh/plugins"
+# 详情页基础 URL（<author>/<name> 拼接在后面）
+detail_base_url = "https://dsh-plugin.org/zh/plugins"
+# 内存缓存 TTL（秒）。目录约 4000+ 项，抓一次即可，缓存避免频繁请求。
+catalog_cache_ttl = 3600
+# 单次搜索返回的每页数量
+page_size = 24
+# 请求目录/详情页时的浏览器 UA，避免被拦截
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"

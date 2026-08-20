@@ -1,0 +1,9 @@
+{
+  "python.testing.unittestEnabled": true,
+  "python.testing.pyTestEnabled": false,
+  "python.testing.cwd": "${workspaceFolder}",
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true
+  }
+}

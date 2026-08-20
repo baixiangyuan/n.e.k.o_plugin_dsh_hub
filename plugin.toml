@@ -1,0 +1,46 @@
+[plugin]
+name = "DSH 插件中心"
+description = "在 N.E.K.O 里浏览、搜索并使用 DeepSeek Harness（DSH）插件市场的 4000+ 插件。内置网页面板，可按关键词搜索插件、查看安装命令与 GitHub 仓库，并让猫娘在聊天里帮你推荐 DSH 插件。"
+short_description = "Browse, search and use 4000+ DeepSeek Harness (DSH) plugins right inside N.E.K.O, with a built-in web panel."
+keywords = ["dsh", "deepseek", "harness", "插件市场", "plugin", "猫娘", "catgirl", "gacha", "工具"]
+version = "0.1.0"
+id = "dsh_hub"
+entry = "plugins.dsh_hub:DshHubPlugin"
+
+[plugin.author]
+name = "baixiangyuan"
+
+[plugin.sdk]
+recommended = ">=0.1.0,<0.2.0"
+supported = ">=0.1.0,<0.3.0"
+
+[plugin.i18n]
+default_locale = "zh-CN"
+locales_dir = "i18n"
+
+[plugin_runtime]
+enabled = true
+auto_start = true
+
+[plugin.store]
+enabled = true
+
+[plugin.ui.panel]
+id = "main"
+title = "DSH 插件中心"
+mode = "static"
+entry = "static/index.html"
+open_in = "iframe"
+permissions = ["state:read", "config:read", "action:call"]
+
+[dsh_hub]
+# DSH 插件市场目录页（中文）。后端会抓取并解析全量插件清单。
+catalog_url = "https://dsh-plugin.org/zh/plugins"
+# 详情页基础 URL（<author>/<name> 拼接在后面）
+detail_base_url = "https://dsh-plugin.org/zh/plugins"
+# 内存缓存 TTL（秒）。目录约 4000+ 项，抓一次即可，缓存避免频繁请求。
+catalog_cache_ttl = 3600
+# 单次搜索返回的每页数量
+page_size = 24
+# 请求目录/详情页时的浏览器 UA，避免被拦截
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"

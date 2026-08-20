@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DSH 插件中心</title>
+<style>
+  :root {
+    --bg: #fff7fb;
+    --card: #ffffff;
+    --ink: #2b2330;
+    --muted: #8a7f8c;
+    --line: #f0d9e8;
+    --pink: #ff6fae;
+    --pink-d: #e84f97;
+    --cyan: #36c5d6;
+    --green: #2faf6b;
+    --amber: #e0922f;
+    --shadow: 0 6px 20px rgba(255, 111, 174, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+  }
+  header {
+    padding: 18px 22px 14px;
+    background: linear-gradient(120deg, #ffe3f1, #e6fbff);
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { margin: 0; font-size: 20px; color: var(--pink-d); letter-spacing: .5px; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 12.5px; }
+  .wrap { padding: 16px 22px 40px; max-width: 1100px; margin: 0 auto; }
+  .searchbar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 12px; box-shadow: var(--shadow);
+  }
+  .searchbar input[type=text] {
+    flex: 1 1 280px; min-width: 200px; padding: 10px 12px; border: 1px solid var(--line);
+    border-radius: 10px; font-size: 14px; outline: none; color: var(--ink);
+  }
+  .searchbar input[type=text]:focus { border-color: var(--pink); }
+  button {
+    cursor: pointer; border: none; border-radius: 10px; padding: 10px 16px;
+    font-size: 14px; font-weight: 600; color: #fff; background: var(--pink);
+    transition: .15s; box-shadow: var(--shadow);
+  }
+  button:hover { background: var(--pink-d); }
+  button.ghost { background: #fff; color: var(--pink-d); border: 1px solid var(--pink); box-shadow: none; }
+  button.ghost:hover { background: #fff0f7; }
+  .meta { color: var(--muted); font-size: 12.5px; margin: 14px 2px 8px; }
+  .meta b { color: var(--pink-d); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 15px; box-shadow: var(--shadow); cursor: pointer; transition: .15s;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--pink); }
+  .card .name { font-weight: 700; font-size: 15px; color: var(--ink); }
+  .card .author { font-size: 12px; color: var(--cyan); }
+  .card .slug { font-size: 11.5px; color: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; word-break: break-all; }
+  .pager { display: flex; gap: 8px; align-items: center; justify-content: center; margin: 18px 0 6px; }
+  .pager button { padding: 7px 13px; }
+  /* detail */
+  .detail {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 20px; box-shadow: var(--shadow); margin-top: 8px;
+  }
+  .detail h2 { margin: 0 0 4px; color: var(--pink-d); }
+  .detail .sub { color: var(--muted); font-size: 12.5px; margin-bottom: 12px; }
+  .detail .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; align-items: center; }
+  .badge { background: #fff0f7; color: var(--pink-d); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+  .badge.cyan { background: #e6fbff; color: var(--cyan); }
+  .badge.green { background: #e9f8ef; color: var(--green); }
+  .desc { line-height: 1.7; color: #4a4150; margin: 10px 0; }
+  .cmd {
+    display: flex; gap: 8px; align-items: stretch; background: #2b2330; color: #ffe3f1;
+    border-radius: 10px; padding: 10px 12px; font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px; word-break: break-all;
+  }
+  .cmd code { flex: 1; white-space: pre-wrap; }
+  .cmd button { padding: 6px 12px; font-size: 12px; }
+  .links a { color: var(--cyan); text-decoration: none; font-weight: 600; }
+  .links a:hover { text-decoration: underline; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  .err { color: #d33; background: #fff0f0; border: 1px solid #ffd5d5; padding: 10px 12px; border-radius: 10px; margin: 10px 0; }
+  .loading { opacity: .6; }
+  .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🐱 DSH 插件中心</h1>
+  <p>在 N.E.K.O 里浏览 DeepSeek Harness 插件市场的 4000+ 插件，一键复制安装命令，回到你的 DSH 实例即可使用。</p>
+</header>
+<div class="wrap">
+  <div class="searchbar">
+    <input type="text" id="q" placeholder="搜索插件名 / 作者 / 仓库，例如 modlens、vision、图片…" />
+    <button id="searchBtn">🔍 搜索</button>
+    <button class="ghost" id="resetBtn">显示全部</button>
+  </div>
+  <div id="msg"></div>
+  <div id="detailSlot"></div>
+  <div class="meta" id="meta"></div>
+  <div class="grid" id="grid"></div>
+  <div class="pager" id="pager"></div>
+  <p class="hint">提示：DSH 插件运行在 DeepSeek Harness（Node/Cordis）里，无法被 N.E.K.O 直接执行。本中心负责「发现 + 安装命令」桥接，真正的运行发生在你的 DSH 实例。</p>
+</div>
+
+<script>
+const PLUGIN_ID = "dsh_hub";
+const BASE = `/plugin/${PLUGIN_ID}`;
+let currentPage = 1;
+
+const $ = (id) => document.getElementById(id);
+
+async function getContext() {
+  const r = await fetch(`${BASE}/hosted-ui/context?kind=panel&id=main&locale=zh-CN`, { credentials: "include" });
+  if (!r.ok) throw new Error("获取面板状态失败: " + r.status);
+  return await r.json();
+}
+async function callAction(actionId, args) {
+  const r = await fetch(`${BASE}/hosted-ui/action/${encodeURIComponent(actionId)}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ args: args || {}, kind: "panel", surface_id: "main", locale: "zh-CN" }),
+  });
+  if (!r.ok) throw new Error("调用动作失败: " + r.status);
+  return await r.json();
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function showMsg(text, isErr) {
+  const el = $("msg");
+  if (!text) { el.innerHTML = ""; return; }
+  el.innerHTML = `<div class="${isErr ? "err" : "meta"}">${escapeHtml(text)}</div>`;
+}
+
+function renderMeta(state) {
+  if (state.detail) { $("meta").innerHTML = ""; return; }
+  const total = state.total || 0;
+  const shown = (state.results || []).length;
+  const from = total === 0 ? 0 : (state.page - 1) * state.page_size + 1;
+  const to = from + shown - 1;
+  $("meta").innerHTML = total
+    ? `共 <b>${total}</b> 个插件${state.query ? `（匹配「${escapeHtml(state.query)}」）` : ""} · 当前显示 ${from}-${to}`
+    : "暂无结果";
+}
+
+function renderGrid(state) {
+  const grid = $("grid");
+  const items = state.results || [];
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty">没有找到插件，换个关键词试试～</div>`;
+    return;
+  }
+  grid.innerHTML = items.map((it) => `
+    <div class="card" data-author="${escapeHtml(it.author)}" data-name="${escapeHtml(it.slug)}">
+      <div class="name">${escapeHtml(it.name)}</div>
+      <div class="author">by ${escapeHtml(it.author)}</div>
+      <div class="slug">${escapeHtml(it.slug)}</div>
+    </div>`).join("");
+  grid.querySelectorAll(".card").forEach((c) => {
+    c.addEventListener("click", () => openDetail(c.dataset.author, c.dataset.name));
+  });
+}
+
+function renderPager(state) {
+  const pager = $("pager");
+  const pages = state.page_count || 1;
+  if (pages <= 1) { pager.innerHTML = ""; return; }
+  pager.innerHTML = `
+    <button class="ghost" id="prev" ${state.page <= 1 ? "disabled" : ""}>‹ 上一页</button>
+    <span class="meta">第 ${state.page} / ${pages} 页</span>
+    <button class="ghost" id="next" ${state.page >= pages ? "disabled" : ""}>下一页 ›</button>`;
+  const prev = $("prev"), next = $("next");
+  if (prev) prev.onclick = () => gotoPage(state.page - 1);
+  if (next) next.onclick = () => gotoPage(state.page + 1);
+}
+
+function renderDetail(detail) {
+  const slot = $("detailSlot");
+  if (!detail) { slot.innerHTML = ""; return; }
+  const cmd = detail.install_command || `dsh plugin --profile web add github:${detail.author}/${detail.slug}`;
+  const badges = [];
+  if (detail.category) badges.push(`<span class="badge">${escapeHtml(detail.category)}</span>`);
+  if (detail.stars) badges.push(`<span class="badge green">⭐ ${escapeHtml(detail.stars)}</span>`);
+  if (detail.github) badges.push(`<span class="badge cyan">${escapeHtml(detail.github)}</span>`);
+  slot.innerHTML = `
+    <div class="detail">
+      <h2>${escapeHtml(detail.name)}</h2>
+      <div class="sub">by ${escapeHtml(detail.author)} · ${escapeHtml(detail.slug)}</div>
+      <div class="row">${badges.join("")}</div>
+      <div class="desc">${escapeHtml(detail.description || "（无简介）")}</div>
+      <div class="cmd"><code id="cmdText">${escapeHtml(cmd)}</code><button id="copyBtn">复制</button></div>
+      <div class="row links">
+        <a href="${escapeHtml(detail.url)}" target="_blank" rel="noopener">🔗 在 DSH 市场查看</a>
+        ${detail.github ? `<a href="https://github.com/${escapeHtml(detail.github)}" target="_blank" rel="noopener">🐙 GitHub 仓库</a>` : ""}
+        <button class="ghost" id="backBtn">↩ 返回列表</button>
+      </div>
+    </div>`;
+  $("copyBtn").onclick = () => copyText(cmd);
+  $("backBtn").onclick = () => closeDetail();
+}
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => flash("复制成功 ✓"), () => fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); flash("复制成功 ✓"); } catch (e) { flash("复制失败，请手动选择"); }
+  document.body.removeChild(ta);
+}
+function flash(t) { showMsg(t, false); setTimeout(() => { if ($("msg").textContent === t) showMsg("", false); }, 1500); }
+
+async function refresh(afterAction) {
+  document.body.classList.add("loading");
+  try {
+    const ctx = await getContext();
+    const state = ctx.state || {};
+    renderDetail(state.detail);
+    if (!state.detail) { renderMeta(state); renderGrid(state); renderPager(state); }
+    else { $("meta").innerHTML = ""; $("grid").innerHTML = ""; $("pager").innerHTML = ""; }
+    if (afterAction && afterAction.result && afterAction.result.message) showMsg(afterAction.result.message, false);
+  } catch (e) {
+    showMsg(e.message, true);
+  } finally {
+    document.body.classList.remove("loading");
+  }
+}
+
+async function doSearch(page) {
+  const q = $("q").value.trim();
+  currentPage = page || 1;
+  showMsg("搜索中…", false);
+  try {
+    const res = await callAction("search", { query: q, page: currentPage });
+    await refresh(res);
+  } catch (e) { showMsg(e.message, true); }
+}
+async function gotoPage(p) { currentPage = p; await doSearch(currentPage); }
+
+async function openDetail(author, name) {
+  showMsg("加载详情中…", false);
+  try {
+    const res = await callAction("open_detail", { author, name });
+    await refresh(res);
+  } catch (e) { showMsg(e.message, true); }
+}
+async function closeDetail() {
+  try { const res = await callAction("close_detail", {}); await refresh(res); }
+  catch (e) { showMsg(e.message, true); }
+}
+
+$("searchBtn").onclick = () => doSearch(1);
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(1); });
+$("resetBtn").onclick = () => { $("q").value = ""; doSearch(1); };
+
+// 首次加载
+(async () => { await refresh(); })();
+</script>
+</body>
+</html>

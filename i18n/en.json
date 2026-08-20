@@ -1,0 +1,9 @@
+{
+  "panel.title": "DSH Plugin Hub",
+  "actions.search.label": "Search",
+  "actions.open_detail.label": "View Detail",
+  "actions.close_detail.label": "Back to List",
+  "entries.search.name": "Search DSH Plugins",
+  "entries.open_detail.name": "View DSH Plugin Detail",
+  "entries.close_detail.name": "Close Plugin Detail"
+}
