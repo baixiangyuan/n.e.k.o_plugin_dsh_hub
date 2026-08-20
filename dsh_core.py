@@ -13,13 +13,12 @@ Node 运行时里，无法被 N.E.K.O 直接加载执行。本模块只负责把
 from __future__ import annotations
 
 import html
-import json
 import re
 import time
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
-from typing import Any, Optional
+from dataclasses import dataclass
+from typing import Any
 
 _LIST_ITEM_RE = re.compile(
     r'"@type":"ListItem","position":\d+,"name":"(?P<name>[^"]+)","url":"(?P<url>[^"]+)"'

@@ -21,7 +21,7 @@ DSH 插件中心 v0.1 (DSH Plugin Hub)
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from plugin.sdk.plugin import (
     Err,
