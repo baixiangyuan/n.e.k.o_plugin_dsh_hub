@@ -94,7 +94,7 @@ class DshHubPlugin(NekoPluginBase):
         )
 
     # ── 生命周期 ───────────────────────────────────────────────
-    @lifecycle
+    @lifecycle(id="startup")
     async def on_startup(self) -> None:
         self.logger.info("[dsh_hub] 启动：DSH 插件中心已就绪")
         # 预热：抓取一次目录并缓存，面板打开即快
@@ -104,7 +104,7 @@ class DshHubPlugin(NekoPluginBase):
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("[dsh_hub] 预热目录失败（将在首次搜索时重试）: %s", exc)
 
-    @lifecycle
+    @lifecycle(id="shutdown")
     async def on_shutdown(self) -> None:
         self.logger.info("[dsh_hub] 关闭：DSH 插件中心")
 
